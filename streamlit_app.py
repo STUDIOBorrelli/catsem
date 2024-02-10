@@ -173,7 +173,6 @@ with tab3:
 'LANT_PEDO',
 ] 
     st.dataframe(fun_df()[fun_df()['ID.IMP']==selected_section+nomeric][options])
-
 with tab4:
     st.caption("Dettagli sull'incrocio selezionato")
     options = st.multiselect(
@@ -184,7 +183,9 @@ with tab4:
     st.dataframe(fun_df()[fun_df()['ID.IMP']==selected_section+nomeric][options])   
     
 with tab5:
+   
     st.title(selected_section+nomeric)
-
+    st.subheader(fun_nome_incrocio(fun_filtro_risul(fun_df(),selected_section,nomeric)))
+   
 
 # streamlit run strim.py
