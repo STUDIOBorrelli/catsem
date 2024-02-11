@@ -40,7 +40,8 @@ dictionary = var.OPZIONI
 Aggiornamento=('Versione ','Archivio ','2.03 ')
 def fun_df():
     import pandas as pd
-    path='C:\\Users\\gianni\\Desktop\\Nuova cartella\\Streamlit\\'
+    path='\\
+    path1='C:\\Users\\gianni\\Desktop\\Nuova cartella\\Streamlit\\'
     file='ARCHIVIO_2.00.xlsx' 
     df = pd.read_excel(path+file)
     return df    
