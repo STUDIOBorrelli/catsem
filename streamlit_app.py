@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
-
+import folium
+from streamlit_folium import st_folium
 class var():
     #ID.IMP	NOME_IMP	LAT_X_E	LONG_Y_N	ID.ELEM	TIPOLOGIA	FOTO 1	FOTO 2	SOSTEGNO	LANT_BASSE	LANT_ALTE	LANT_PEDO	PRESENZA_L	PRESENZA_P	PRESENZA_1	PRESENZA_2	PRESENZA_D	CENTRALINA	MODELLO	CENTRALIZZ	USCITE	FUNZIONAME	TIPO_SENSO	tipologia_x_ric
     GG='C:\\Users\\gianni\\Desktop\\Appunti0123.jpg'
@@ -135,34 +136,29 @@ with tab1:
         st.link_button("Foto 1", fun_nome_foto1((fun_filtro_risul(fun_df(),selected_section,nomeric))))
     
 with tab2:
-    import folium
-    import streamlit as st
 
-    from streamlit_folium import st_folium
     LAT=(fun_nome_LAT_X_E(fun_filtro_risul(fun_df(),selected_section,nomeric))) #41.10924724693509
     LONG=(fun_nome_LONG_Y_N(fun_filtro_risul(fun_df(),selected_section,nomeric))) #16.853946431342074
     # center on Liberty Bell, add marker
     m = folium.Map(location=[LONG,LAT], zoom_start=16)
     folium.Marker(
-        [LONG,LAT], popup="Liberty Bell", tooltip="Liberty Bell"
+        [LONG,LAT], popup="", tooltip=""
     ).add_to(m)
 
     # call to render Folium map in Streamlit, but don't get any data back
     # from the map (so that it won't rerun the app when the user interacts)
     st_folium(m, width=725, returned_objects=[])
+    
     col1, col2, col3 = st.columns([1,6,1])
     with col1:
         st.write("")
     with col2:
-        st.caption('<div style="text-align: center">Nome Incrocio</div>', unsafe_allow_html=True) #left right center
-        st.write(selected_section+nomeric, fun_nome_incrocio(fun_filtro_risul(fun_df(),selected_section,nomeric)))
-        st.image(image)
+        st.write("")
         
     with col3:
         st.write("")
     st.markdown("This is **bold** text in markdown")
     st.write('CATASTO_prova.xlsx')
-    
 with tab3:
     st.caption("Dettagli sull'incrocio selezionato")
     options = ['ID.ELEM',
