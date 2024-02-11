@@ -184,4 +184,4 @@ with tab5:
     st.subheader(fun_nome_incrocio(fun_filtro_risul(fun_df(),selected_section,nomeric)))
    
 
-# streamlit run strim.py
+# streamlit run streamlit_app.py
