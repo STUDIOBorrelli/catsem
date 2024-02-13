@@ -4,7 +4,7 @@ import folium
 from streamlit_folium import st_folium
 class var():
     #ID.IMP	NOME_IMP	LAT_X_E	LONG_Y_N	ID.ELEM	TIPOLOGIA	FOTO 1	FOTO 2	SOSTEGNO	LANT_BASSE	LANT_ALTE	LANT_PEDO	PRESENZA_L	PRESENZA_P	PRESENZA_1	PRESENZA_2	PRESENZA_D	CENTRALINA	MODELLO	CENTRALIZZ	USCITE	FUNZIONAME	TIPO_SENSO	tipologia_x_ric
-    GG='C:\\Users\\gianni\\Desktop\\Appunti0123.jpg'
+    #GG='C:\\Users\\gianni\\Desktop\\Appunti0123.jpg'
     OPZIONI = {"ATT-": "ATT-",
                "DIS-": "DIS-",
                "LAM-": "LAM-",
@@ -39,7 +39,8 @@ dictionary = var.OPZIONI
 Aggiornamento=('Versione ','Archivio ','2.03 ')
 def fun_df():
     import pandas as pd
-    path='C:\\Users\\gianni\\Desktop\\Nuova cartella\\Streamlit\\'
+    path='/catsem/'
+    #path='C:\\Users\\gianni\\Desktop\\Nuova cartella\\Streamlit\\'
     file='ARCHIVIO_2.00.xlsx' 
     df = pd.read_excel(path+file)
     return df    
