@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import folium
+import base64
 from streamlit_folium import st_folium
 st.set_page_config(page_title="My App")
 class var():
