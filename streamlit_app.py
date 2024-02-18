@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import folium
-import base64
 from streamlit_folium import st_folium
 st.set_page_config(page_title="My App")
 class var():
@@ -43,14 +42,14 @@ class var():
 Aggiornamento=('Versione ','Archivio ','2.04 ')
 def fun_df():
     import pandas as pd
-    path='\\'
+    path='C:\\Users\\gianni\\Desktop\\Nuova cartella\\Streamlit\\'
     file='ARCHIVIO_2.00.xlsx' 
     df = pd.read_excel(path+file)
     return df    
     
 def fun_filtro_risul(df,selected_section,nomeric):
-    RISUL =(df[df['ID.IMP']==selected_section+nomeric])
-    return RISUL
+    (df[df['ID.IMP']==selected_section+nomeric])
+
 
 def gg1(RISUL):
     kk=(RISUL.filter(items=['ID.IMP']))
@@ -73,11 +72,11 @@ def fun_nome_foto1(RISUL):
     return nome_foto1
 
 def fun_nome_LAT_X_E(RISUL):
-    nome_foto1=RISUL.iloc[1][2]
-    return nome_foto1
+    LAT_X_E=RISUL.iloc[1][2]
+
 def fun_nome_LONG_Y_N(RISUL):
-    nome_foto1=RISUL.iloc[1][3]
-    return nome_foto1
+    LONG_Y_N=RISUL.iloc[1][3]
+
 def fun_maps():
         df=fun_df()
         num_prov=df.shape[0]
@@ -89,8 +88,8 @@ def fun_maps():
             coordx=(df.iloc[i,2])
             coordy=(df.iloc[i,3])
             iden=str((df.iloc[i,4]))
-            tip=(df.iloc[i,8])
-            iden6=(iden[6])
+            tip=(df.iloc[i,8])#tipologia elemento
+            iden6=(iden[6]) #num elemento
             #messaggio = f"Ciao, lidentificativo è {iden6} le coordx sono {LAT} mentre le coordx sono {LONG} anni."
             folium.Marker(
             location=[coordy,coordx],popup=(tip,iden6),icon=folium.DivIcon(html=f"""<div style="font: arial; font-size: 60px; color: red">{'.'}</div>""")
@@ -184,7 +183,8 @@ with tab2:#---------"HOME"
             #st.write('Totali Elementi Filtrati:', r"$\textsf{\normalsize ",fun_num_filtrati(fun_filtro_risul(fun_df(),selected_section,nomeric)),"}$" )
             #st.write('Tot. Elem. Filtrati:', fun_num_filtrati(fun_filtro_risul(fun_df(),selected_section,nomeric)))
             st.caption(':blue[_Tot. Elem. Filtrati:_]', )
-            st.code(fun_num_filtrati(fun_filtro_risul(fun_df(),selected_section,nomeric)))
+            #st.code(fun_num_filtrati(fun_filtro_risul(fun_df(),selected_section,nomeric)))
+            #print(fun_num_filtrati(fun_df().shape[0]))
             
     
     with col2:
@@ -192,7 +192,7 @@ with tab2:#---------"HOME"
         image =selected_section+nomeric+'.jpg'
         st.image(image)
         st.caption(':blue[_Nome Incrocio_]')
-        st.write(fun_nome_incrocio(fun_filtro_risul(fun_df(),selected_section,nomeric)))
+        #st.write(fun_nome_incrocio(fun_filtro_risul(fun_df(),selected_section,nomeric)))
         #st.write(fun_nome_incrocio(fun_filtro_risul(fun_df(),selected_section,nomeric)))
     col31, col32, col33, = st.columns(3)
     with col31:
@@ -200,7 +200,7 @@ with tab2:#---------"HOME"
     with col32:
         st.caption('A caption with _italics_ :blue[colors] and emojis :sunglasses:')
     with col33:
-        st.link_button("Foto 1", fun_nome_foto1((fun_filtro_risul(fun_df(),selected_section,nomeric))))
+        st.caption('A caption with _italics_ :blue[colors] and emojis :sunglasses:')
        
 with tab3:#---------"DETTAGLI"
     st.caption("Dettagli sull'incrocio selezionato")
@@ -224,7 +224,7 @@ with tab4:#---------"MAPPA"
 with tab5:#---------"STAMPA PDF"
    
     st.title(selected_section+nomeric)
-    st.subheader(fun_nome_incrocio(fun_filtro_risul(fun_df(),selected_section,nomeric)))
+    #st.subheader(fun_nome_incrocio(fun_filtro_risul(fun_df(),selected_section,nomeric)))
    
 with tab6:#---------"ARCHIVIO DWG"
     uploaded_files = st.file_uploader("Choose a CSV file", accept_multiple_files=True)
