@@ -42,7 +42,7 @@ class var():
 Aggiornamento=('Versione ','Archivio ','2.04 ')
 def fun_df():
     import pandas as pd
-    path='C:\\Users\\gianni\\Desktop\\Nuova cartella\\Streamlit\\'
+    path='\\'
     file='ARCHIVIO_2.00.xlsx' 
     df = pd.read_excel(path+file)
     return df    
