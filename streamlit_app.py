@@ -1,14 +1,11 @@
 import streamlit as st
 import pandas as pd
 import folium
-import base64
 from streamlit_folium import st_folium
 st.set_page_config(page_title="My App")
 class var():
     #ID.IMP	NOME_IMP	LAT_X_E	LONG_Y_N	ID.ELEM	TIPOLOGIA	FOTO 1	FOTO 2	SOSTEGNO	LANT_BASSE	LANT_ALTE	LANT_PEDO	PRESENZA_L	PRESENZA_P	PRESENZA_1	PRESENZA_2	PRESENZA_D	CENTRALINA	MODELLO	CENTRALIZZ	USCITE	FUNZIONAME	TIPO_SENSO	tipologia_x_ric
-    GG='C:\\Users\\gianni\\Desktop\\Appunti0123.jpg'
-    OPZIONI1 = ["ATTRAVERSAMENTO","DISSUASORE",
-               "SEMAFORO-"]
+    #GG='C:\\Users\\gianni\\Desktop\\Appunti0123.jpg'
     OPZIONI = {"ATT-": "ATT-",
                "DIS-": "DIS-",
                "LAM-": "LAM-",
@@ -43,7 +40,7 @@ class var():
 Aggiornamento=('Versione ','Archivio ','2.04 ')
 def fun_df():
     import pandas as pd
-    path='C:\\Users\\gianni\\Desktop\\Nuova cartella\\Streamlit\\'
+    path='C:\\Users\\gianni\\Desktop\\Nuova cartella\\semafori\\'
     file='ARCHIVIO_2.00.xlsx' 
     df = pd.read_excel(path+file)
     return df    
@@ -66,7 +63,7 @@ def fun_num_filtrati(RISUL):
 
 def fun_nome_incrocio(RISUL):
     nome_incrocio=RISUL.iloc[1][1]
-    return nome_incrocio
+    
 
 def fun_nome_foto1(RISUL):
     nome_foto1=RISUL.iloc[1][1]
@@ -135,7 +132,9 @@ with col3:
 #-----------------------------------------------
 
 tab1, tab2, tab3, tab4, tab5, tab6,= st.tabs(["HOME", "MAPPA", "DETTAGLI", "MAPPA", "STAMPA PDF", "ARCHIVIO DWG"])
-nome_incrocio=(fun_df().iloc[0,1])
+nome_incrocio="CITTA' DI BARI"
+#nome_incrocio=(fun_df().iloc[0,1])
+#fun_nome_incrocio(fun_filtro_risul(fun_df(),selected_section,nomeric))
 with tab1:#--------- "MAPPA"
     if nomeric=='000':
         html_str = f"""
@@ -159,7 +158,6 @@ with tab1:#--------- "MAPPA"
         </style>
         <p class="a">{nome_incrocio}</p>
         """
-
         st.markdown(html_str, unsafe_allow_html=True)
             
     with col3:
@@ -205,14 +203,14 @@ with tab2:#---------"HOME"
        
 with tab3:#---------"DETTAGLI"
     st.caption("Dettagli sull'incrocio selezionato")
-    options = ['ID.ELEM',
-'TIPOLOGIA',
-'SOSTEGNO',
-'LANT_BASSE',
-'LANT_ALTE',
-'LANT_PEDO',
-] 
-    st.dataframe(fun_df()[fun_df()['ID.IMP']==selected_section+nomeric][options])
+    options = [	'ID.ELEM',
+                'TIPOLOGIA',
+                'SOSTEGNO',
+                'LANT_BASSE',
+                'LANT_ALTE',
+                'LANT_PEDO',
+               ] 
+    #st.dataframe(fun_df()[fun_df()['ID.IMP']==selected_section+nomeric][options])
 with tab4:#---------"MAPPA"
     st.caption("Dettagli sull'incrocio selezionato")
     options = st.multiselect(
@@ -233,4 +231,4 @@ with tab6:#---------"ARCHIVIO DWG"
         bytes_data = uploaded_file.read()
         st.write("filename:", uploaded_file.name)
         st.write(bytes_data)
-# streamlit run strim.py
+# streamlit run streamlit_app.py
