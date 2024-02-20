@@ -2,7 +2,6 @@
 pandas
 streamlit
 fpdf2
-base64
 folium
 streamlit_folium
 openpyxl
