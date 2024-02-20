@@ -18,7 +18,7 @@ class var():
 Aggiornamento='2.02 '
 def fun_df():
     import pandas as pd
-    path='\\'
+    path='\'
     file='ARCHIVIO_2.00.xlsx' 
     df = pd.read_excel(path+file)
     return df    
