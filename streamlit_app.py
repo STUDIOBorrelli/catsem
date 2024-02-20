@@ -20,7 +20,7 @@ def fun_df():
     import pandas as pd
     path='\'
     file='ARCHIVIO_2.00.xlsx' 
-    df = pd.read_excel(path+file)
+    df = pd.read_excel(file)
     return df    
 
 
