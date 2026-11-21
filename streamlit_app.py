@@ -72,14 +72,29 @@ def _esc_html(v):
     return _html.escape(str(v))
 
 
+NULL_PLACEHOLDER = "—"
+
 def _cell_display(v):
-    """Restituisce il valore da mostrare in tabella, con — se nullo/vuoto."""
-    if pd.isna(v):
+    """Valore da mostrare in tabella, con — se nullo/vuoto.
+    Gestisce in modo sicuro NaN, None, stringhe vuote, booleani, numeri."""
+    if v is None:
         return NULL_PLACEHOLDER
-    s = str(v).strip()
-    if s == "":
+    try:
+        # NaN float
+        if isinstance(v, float) and pd.isna(v):
+            return NULL_PLACEHOLDER
+        # stringa vuota o solo spazi
+        if isinstance(v, str) and v.strip() == "":
+            return NULL_PLACEHOLDER
+        # booleano
+        if isinstance(v, bool):
+            return str(v)
+        # numero intero senza .0
+        if isinstance(v, (int, float)):
+            return str(int(v)) if float(v).is_integer() else str(v)
+        return str(v).strip()
+    except Exception:
         return NULL_PLACEHOLDER
-    return s
 
 
 def _riga_centralina(df_sel):
@@ -92,11 +107,11 @@ def _riga_centralina(df_sel):
 
 
 def _info_centralina(riga_rif, df_columns):
-    """Restituisce TUTTE le colonne del foglio con il valore della riga
-    centralina (— se nullo/vuoto). Ordine = ordine delle colonne Excel."""
+    """TUTTE le colonne del DataFrame, con il valore della riga centralina.
+    Nessuna colonna viene omessa; i valori nulli diventano '—'."""
     out = []
     for col in df_columns:
-        val = riga_rif[col] if col in riga_rif.index else None
+        val = riga_rif.get(col, None)
         out.append((str(col), _cell_display(val)))
     return out
 
