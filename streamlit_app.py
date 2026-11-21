@@ -31,7 +31,7 @@ st.set_page_config(page_title="Archivio Semafori Bari", layout="wide")
 
 Aggiornamento = '2.02'
 
-# Colonne 0-based del nuovo Excel:
+# Colonne 0-based del file Excel:
 # A=ID.IMP B=NOME_IMP C=LAT_X_E D=LONG_Y_N E=ID.ELEM F=TIPOLOGIA
 # G=FOTO 1 H=FOTO 2 I=SOSTEGNO J=LANT_BASSE K=LANT_ALTE L=LANT_ PEDO
 # M=PRESENZA_L N=PRESENZA_P O=PRESENZA_1 P=PRESENZA_2 Q=PRESENZA_D
@@ -44,19 +44,15 @@ COL_LAT_Y     = 3   # LONG_Y_N -> latitudine
 COL_ID_ELEM   = 4
 COL_TIPOLOGIA = 5
 
-# Ordine preferenziale per il pannello "Informazioni impianto"
-ORDINE_INFO = [
-    "ID.IMP", "NOME_IMP", "CENTRALINA", "MODELLO", "SERIALE",
-    "DISPALYZTL", "CENTRALIZZ", "USCITE", "FUNZIONAME", "TIPO_SENSO",
-    "TELECAMERE",
-]
-
 # Colonne mostrate nella tabella "Dettaglio elementi"
 COLS_DETTAGLIO = [
     "ID.ELEM", "TIPOLOGIA", "SOSTEGNO",
     "LANT_BASSE", "LANT_ALTE", "LANT_ PEDO",
     "PRESENZA_L", "PRESENZA_P", "PRESENZA_1", "PRESENZA_2", "PRESENZA_D",
 ]
+
+# Segnaposto per valori nulli/vuoti
+NULL_PLACEHOLDER = "—"
 
 
 # ============================================================
@@ -76,40 +72,32 @@ def _esc_html(v):
     return _html.escape(str(v))
 
 
+def _cell_display(v):
+    """Restituisce il valore da mostrare in tabella, con — se nullo/vuoto."""
+    if pd.isna(v):
+        return NULL_PLACEHOLDER
+    s = str(v).strip()
+    if s == "":
+        return NULL_PLACEHOLDER
+    return s
+
+
 def _riga_centralina(df_sel):
     """Ritorna la riga della centralina (o la prima riga se manca)."""
-    mask = df_sel[df_sel.columns[COL_TIPOLOGIA]].astype(str).str.upper() == "CENTRALINA"
+    col_tip = df_sel.columns[COL_TIPOLOGIA]
+    mask = df_sel[col_tip].astype(str).str.strip().str.upper() == "CENTRALINA"
     if mask.any():
         return df_sel[mask].iloc[0]
     return df_sel.iloc[0]
 
 
 def _info_centralina(riga_rif, df_columns):
-    """Tutti i campi valorizzati della centralina, con ordine preferenziale."""
-    # 1) prima le colonne dell'ordine preferenziale (se valorizzate)
+    """Restituisce TUTTE le colonne del foglio con il valore della riga
+    centralina (— se nullo/vuoto). Ordine = ordine delle colonne Excel."""
     out = []
-    usate = set()
-    for col in ORDINE_INFO:
-        if col in df_columns:
-            val = riga_rif[col]
-            if pd.isna(val):
-                continue
-            sval = str(val).strip()
-            if sval == "" or sval.lower() == "false":
-                continue
-            out.append((col, sval))
-            usate.add(col)
-    # 2) poi tutte le altre colonne valorizzate
     for col in df_columns:
-        if col in usate:
-            continue
-        val = riga_rif[col]
-        if pd.isna(val):
-            continue
-        sval = str(val).strip()
-        if sval == "" or sval.lower() == "false":
-            continue
-        out.append((str(col), sval))
+        val = riga_rif[col] if col in riga_rif.index else None
+        out.append((str(col), _cell_display(val)))
     return out
 
 
@@ -228,7 +216,7 @@ def genera_pdf(df, selected_section):
         nome = str(df_sel.iloc[0, COL_NOME_IMP])
         story.append(Paragraph(f"Impianto: {_esc_pdf(nome)}", st_h2))
 
-        # --- TUTTI i dati della centralina (incl. SERIALE/DISPALYZTL/TELECAMERE) ---
+        # --- TUTTE le colonne della centralina (anche vuote) ---
         riga_rif = _riga_centralina(df_sel)
         info = _info_centralina(riga_rif, df.columns)
         if info:
@@ -265,7 +253,8 @@ def genera_pdf(df, selected_section):
                   for c in df_dett.columns]
         body = []
         for _, r in df_dett.iterrows():
-            body.append([Paragraph(_esc_pdf(v), st_small) for v in r.values])
+            body.append([Paragraph(_esc_pdf(_cell_display(v)), st_small)
+                         for v in r.values])
         ncol = len(header)
         larghezze = [180*mm / ncol] * ncol
         t3 = Table([header] + body, colWidths=larghezze, repeatRows=1)
@@ -400,7 +389,7 @@ def build_info_html(df, selected_section):
     if df_sel.empty:
         return "<div class='info-frame'>Nessun dato.</div>"
 
-    # Info centralina (stessa funzione del PDF)
+    # Info centralina: TUTTE le colonne, anche vuote
     riga_rif = _riga_centralina(df_sel)
     info = _info_centralina(riga_rif, df.columns)
     info_rows = "".join(
@@ -424,10 +413,10 @@ def build_info_html(df, selected_section):
     body = ""
     for _, r in df_dett.iterrows():
         body += "<tr>" + "".join(
-            f"<td>{_esc_html(v)}</td>" for v in r.values
+            f"<td>{_esc_html(_cell_display(v))}</td>" for v in r.values
         ) + "</tr>"
 
-    # Link foto 1 (Google Maps) e foto 2 (file locale)
+    # Link foto
     link_foto = ""
     if "FOTO 1" in df_sel.columns:
         foto1 = df_sel["FOTO 1"].dropna()
