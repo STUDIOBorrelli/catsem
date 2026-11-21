@@ -1,7 +1,6 @@
-
-pandas
 streamlit
-fpdf2
+pandas
 folium
-streamlit_folium
+streamlit-folium
 openpyxl
+reportlab
